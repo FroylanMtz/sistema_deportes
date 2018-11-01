@@ -118,8 +118,7 @@ class Datos extends Conexion{
 
     }
 
-    //Funcion que trae todos los registros de la tabla alumnos para mostrarlos,
-    //Como todas las tablas pertenecientes a esta base de datos estan relacionados, se ocupo de una union de las mismas, para de esta forma mandar todo como si fuera una unica tabla con la informacion necesaria por la tabla principal que es de alumnos, por ejemplo digamos que se relacion la tabla alumnos con la re tutores, pero solo es por un id, para poder ver el nombre del tutor es necesario esta union
+    
     public function traerDatosJugadores(){
 
         //Es la union de las tablas alumnos, carreras y tutores
@@ -137,9 +136,11 @@ class Datos extends Conexion{
 
     }
 
+    //Funcion que trae todos los registros de la tabla usuarios para mostrarlos,
+    //Como todas las tablas pertenecientes a esta base de datos estan relacionados, se ocupo de una union de las mismas, para de esta forma mandar todo como si fuera una unica tabla con la informacion necesaria por la tabla principal que es de alumnos, por ejemplo digamos que se relacion la tabla alumnos con la re tutores, pero solo es por un id, para poder ver el nombre del tutor es necesario esta union
     public function traerDatosEquipoJugador(){
 
-        //Es la union de las tablas alumnos, carreras y tutores
+        //Es la union de las tablas usuarios, equipos y equipo_jugador
         $stmt = Conexion::conectar()->prepare("SELECT t2.matricula, t3.nombre as equipo , t4.nombre as deporte FROM equipo_jugadores AS t1 INNER JOIN jugadores AS t2 ON t2.matricula = t1.jugador_id INNER JOIN equipos AS t3 ON t3.equipo_id = t1.equipo_id INNER JOIN deportes AS t4 ON t4.deporte_id = t3.deporte_id");
 
         $stmt->execute();
@@ -154,7 +155,7 @@ class Datos extends Conexion{
 
     }
 
-    //Funcion que envia al controlador todos los datos de la tabla carreras, la cual contiene las carreras de la universdiad
+    //Funcion que envia al controlador todos los datos de la tabla equipos, la cual contiene las equipos de la universdiad
     public function traerDatosEquipos($tabla){
 
         //Conexion::conectar() -> es igual a un objeto PDO el cual sirve para conectarse a la base de datos
@@ -173,7 +174,7 @@ class Datos extends Conexion{
     
     }
 
-    //Funcion que almacena todos los datos de un alumno en su respectiva tabla, tabmien pasada por parametro (el nombre)
+    //Funcion que almacena todos los datos de un jugador en su respectiva tabla, tabmien pasada por parametro (el nombre)
     public function guardarDatosJugador($datosJugador, $tabla){
 
         //Se prepara el query con el comando INSERT -> DE INSERTAR 
@@ -194,15 +195,6 @@ class Datos extends Conexion{
         //Se ejecuta dicha insercion y se notifica al controlador para que este le notifique a las vistas necesarias
         if($stmt->execute()){
             
-
-            /*$stmt = Conexion::conectar()->prepare("INSERT INTO equipo_jugadores(equipo_id, jugador_id) VALUES(:equipo, :jugador) ");
-        
-            $stmt->bindParam(':equipo', $datosJugador['equipo'] , PDO::PARAM_INT);
-            $stmt->bindParam(':jugador', $datosJugador['matricula'] , PDO::PARAM_STR);
-
-            $stmt->execute();*/
-
-
             return "success";
         }else{
             return "error";
@@ -228,7 +220,7 @@ class Datos extends Conexion{
     }
 
 
-    //Funcion que retorna solo los datos de un alumno, esta de igual forma utiliza la union de las tres tablas para mostrar toda la informacion del usuario de uan mejor forma, la diferencia es que a esta se le pasa un parametro para identificiar el registro que se quiere, que en este caso pra identificarlo se hace uso del id que es la matricula
+    //Funcion que retorna solo los datos de un jugador
     public function traerDatosJugador($matricula){
 
         //Se prepara el query
@@ -251,7 +243,7 @@ class Datos extends Conexion{
     }
 
 
-    //Funcion que se usa para editar un cierto registro de la tabla alumnos, Este de giual forma tiene dos parametros, uno para especificar los datos en una arreglo asociativo y otro para indicar el nombre de la tabla donde se editaran dichos datos
+    //Funcion que se usa para editar un cierto registro de la tabla jugadores, Este de giual forma tiene dos parametros, uno para especificar los datos en una arreglo asociativo y otro para indicar el nombre de la tabla donde se editaran dichos datos
     public function editarDatosJugador($datosJugador, $tabla){
 
         //Se prepara el query con el comando UPDATE -> DE EDITAR, O ACTUALIZAR
@@ -280,41 +272,56 @@ class Datos extends Conexion{
     }
     
 
+    //Funcion que se usa para hacer la relacion del jugador a un determinado equipo, es una tabla mucho a muchos entre equipos y jugadores
     function guardar_jugador_equipo($equipo,$jugador,$tabla){
 
 
-        $stmt2 = Conexion::conectar()->prepare("SELECT * FROM equipo_jugadores WHERE jugador_id = :jugador");
+        $stmt2 = Conexion::conectar()->prepare("SELECT t1.equipo_id as jugador, t2.nombre as equipo, t3.nombre as deporte FROM equipo_jugadores AS t1 INNER JOIN equipos AS t2 ON t2.equipo_id = t1.equipo_id  INNER JOIN deportes AS t3 ON t3.deporte_id = t2.deporte_id WHERE jugador_id = :jugador");
 
         $stmt2->bindParam(':jugador', $jugador, PDO::PARAM_STR);
-
-        //se ejecuta
         $stmt2->execute();
-
-        //
-        $datos = array();
-
-        //Se trane todos los ddatos
-        $datos = $stmt->FetchAll();
+        $datosEquiposJugador = array();
+        $datosEquiposJugador = $stmt2->FetchAll();
 
 
+        $stmt3 = Conexion::conectar()->prepare("SELECT t1.nombre as equipo, t2.nombre as deporte FROM equipos AS t1 INNER JOIN deportes as t2 ON t2.deporte_id = t1.deporte_id WHERE t1.equipo_id = :equipo");
 
+        $stmt3->bindParam(':equipo', $equipo, PDO::PARAM_INT);
+        $stmt3->execute();
+        $deporteEquipo = array();
+        $deporteEquipo = $stmt3->FetchAll();
 
-        //Se prepara el query con el comando INSERT -> DE INSERTAR 
-        $stmt = Conexion::conectar()->prepare("INSERT INTO $tabla(equipo_id, jugador_id) VALUES(:equipo, :jugador) ");
-        
-        //Se colocan todos sus parametros especificados, y se relacionan con los datos pasdaos por parametro a esta funcion desde el controladro en modo de array asociativo
-        //Asi como se especifica como deben ser tratados (tipo de dato)
-        $stmt->bindParam(':equipo', $equipo , PDO::PARAM_INT);
-        $stmt->bindParam(":jugador", $jugador , PDO::PARAM_STR);
+        $sonDelMismoDeporte = false;
 
+        for($i=0; $i < count($datosEquiposJugador); $i++ ){
 
-        //Se ejecuta dicha insercion y se notifica al controlador para que este le notifique a las vistas necesarias
-        if($stmt->execute()){
-            return "success";
-        }else{
-            return "error";
+            if( $datosEquiposJugador[$i]['deporte'] == $deporteEquipo[0]['deporte'] ){
+                $sonDelMismoDeporte = true;
+            }
+
         }
-        
+
+        if($sonDelMismoDeporte){
+            echo '<script> alert("El jugador que quiere enrolar a ese equipo ya tiene un equipo asociado en el mismo deporte") </script> ';
+        }else{
+
+            //Se prepara el query con el comando INSERT -> DE INSERTAR 
+            $stmt = Conexion::conectar()->prepare("INSERT INTO $tabla(equipo_id, jugador_id) VALUES(:equipo, :jugador) ");
+            
+            //Se colocan todos sus parametros especificados, y se relacionan con los datos pasdaos por parametro a esta funcion desde el controladro en modo de array asociativo
+            //Asi como se especifica como deben ser tratados (tipo de dato)
+            $stmt->bindParam(':equipo', $equipo , PDO::PARAM_INT);
+            $stmt->bindParam(":jugador", $jugador , PDO::PARAM_STR);
+
+
+            //Se ejecuta dicha insercion y se notifica al controlador para que este le notifique a las vistas necesarias
+            if($stmt->execute()){
+                return "success";
+            }else{
+                return "error";
+            }
+
+        }
 
     }
 

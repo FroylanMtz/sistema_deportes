@@ -130,21 +130,22 @@ class Controlador
         return $datosDeUsuarios; //Se retornan los datos a la vista donde se modificaran los datos de ese usuario
     }
 
-    
+    //funcion para editar datos de usuarios existentes en la tabla    
     public function editarDatosUser(){
 
+        //se guardan los datos que se traen desde el formulario en el cual se llenan con datos que estan en la db
         $usuario_id = $_GET['id'];
         $nombre_usuario=$_POST['nombre'];
         $correo_usuario=$_POST['correo'];
         $contra_usuario=$_POST['contra'];
 
+        //Estos datos se almacenan en un arreglo asociativo
         $datosUsuario=array('usuario_id'=>$usuario_id,
                          'nombre_usuario'=>$nombre_usuario,
                          'correo_usuario'=>$correo_usuario,
                          'contra_usuario'=>$contra_usuario);
         
         
-
         //Se finaliza de crear los datos, ya con la  foto nueva o en caso de que haya elegido una nueva
         //Se manda ese objeto con los datos al modelo para que los almacenen en la tabla pasada por parametro aqui abajo
         $respuesta = Datos::editarDatosUsers($datosUsuario, "usuarios");
@@ -163,10 +164,13 @@ class Controlador
 
     }
 
+    //Funcion que elimina un usuario desde la vista donde se muestran todos
     public function eliminarUsuario(){
 
+        //Para saber que usario eliminar se identifica con su id, en este caso la matricula
         $usuario_id = $_GET['id'];
         
+        //Se manda llamar esta funcion desde el modelo en la cual se le pasa el id del jugador a eliminar asi como la tabla en donde se encuentra
         $respuesta = Datos::eliminarDatosUsuario($usuario_id, "usuarios");
 
         //Se notifca al usuario como se realizo en los metodos pasados y si se borro exitosamente lo redirecciona a la pagina principal en donde estan listados todos los usuarios
@@ -181,7 +185,7 @@ class Controlador
 
     }
 
-    //Funcion que trae a todos los alumnos registrados en la dicha tabla para mostrarlos en la pagina de alumnos.php, se muestra ademas un boton para actualizar y eliminar para administrarlos
+    //Funcion que trae a todos los jugadores registrados en la dicha tabla para mostrarlos en la pagina de jugadores.php, se muestra ademas un boton para actualizar y eliminar para administrarlos
     public function obtenerDatosJugadores()
     {
         $datosDeJugadores = array();
@@ -192,18 +196,21 @@ class Controlador
         return $datosDeJugadores;
     }
 
+    //Funcion que se encarga de traer los datos de UN solo jugador especificado por la variable GET[id]
     public function traerDatosEquipoJugador(){
 
+        //Se declara un arreglo para almacenar los datos que responde el modelo
         $datosEquipoJugadores = array();
         
-        //Esta funcion del modelo no pide la tabla ya que se trata de una union de todas las tres tablas existentes para traer todos los datos completos y entendibles
+        //Ese arreglo es llenado con todos los datos
         $datosEquipoJugadores = Datos::traerDatosEquipoJugador();
 
+        //Se regresan los datos a la vista para la posterior edicion
         return $datosEquipoJugadores;
 
     }
 
-    //Funcion que se manda llamar al registrar un usuario nuevo a la aplicacion, todos los datos son enviados a traves de un formulario el cual esta funcion cacha con los parametros POST identificandolos con el respectivo nombre de campo de la vista agregar_alumno.php
+    //Funcion que se manda llamar al registrar un jugador nuevo a la aplicacion, todos los datos son enviados a traves de un formulario el cual esta funcion cacha con los parametros POST identificandolos con el respectivo nombre de campo de la vista agregar_alumno.php
     public function guardarDatosJugador(){
         
         //Datos recibidos de la vista, necesarios para identificar al usuario
@@ -267,7 +274,7 @@ class Controlador
         return $datosDeEquipos;
     }
 
-    //Funcion que sirve para eliminar los datos de un alumno de la tabla, para saber que alumno eliminar se pasa como parametro GET la matricula del alumno, y posterioremte se pasa como parametro junto con el nombre de la tabla para que el modelo haga el resto
+    //Funcion que sirve para eliminar los datos de un jugador de la tabla, para saber que jugador a eliminar se pasa como parametro GET la matricula del alumno, y posterioremte se pasa como parametro junto con el nombre de la tabla para que el modelo haga el resto
     public function eliminarJugador(){
 
         $matricula = $_GET['id'];
@@ -299,20 +306,19 @@ class Controlador
         return $datosDeJugador;
     }
 
-    //Funcion que permite editar los datos de un alumno pasandole los datos por medio de un formualrio, esta funcion es muy parecida a la de arriba a diferencia que manda a otra funcion al modelo la cual sirve para actualizar los datos de un respectivo alumno
+    //Funcion que permite editar los datos de un jugador pasandole los datos por medio de un formualrio, esta funcion es muy parecida a la de arriba a diferencia que manda a otra funcion al modelo la cual sirve para actualizar los datos de un respectivo jugador
     public function editarDatosJugador(){
 
+        //Las variables alamcenan los datos que vienen desde el formulario en donde se editan los datos
         $matricula = $_GET['id'];
         $nombre = $_POST['nombre'];
         $apellido = $_POST['apellido'];
         $correo = $_POST['correo'];
-
-        //echo 'matricula ' . $_GET['id'];
         
-        echo 'Foto actual ' . $_POST['fotoActual'];
-
+        //Esta es la forma en que se almacena el nombre de la foto ademas de colocar el multipart form data 
         $nombreArchivo = basename($_FILES['foto']['name']);
         
+        //direcotrio en donde se almacenara la imagen que se atualice
         $directorio = 'fotos_jugadores/' . $nombreArchivo;
 
         $extension = pathinfo($directorio , PATHINFO_EXTENSION);
@@ -364,11 +370,14 @@ class Controlador
     }
 
 
+    //funcion que permite relacion un jugaro a un respectivo equipo, es la tabla de muchos a muchos que esta entre jugadores y equipos, debido a que un equipo puede tener muchos jugadores y un jugador puede estar en mucos equipos
     public function guardar_jugador_equipo(){
 
+        //Datos que vienen desde el formulario en de la vista agregar_jugador_a_equipo en donde se coloca un jugador a un equipo
         $jugador = $_POST['jugador'];
         $equipo = $_POST['equipo'];
 
+        //y se pasan al modelo desde esta funcion en la cual se le pasa el equipo y el jugador a relacionar
         $respuesta = Datos::guardar_jugador_equipo($equipo, $jugador, "equipo_jugadores");
 
         if($respuesta == "success"){
