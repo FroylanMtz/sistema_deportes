@@ -8,22 +8,30 @@
     $datosDeportes =  $deportes->obtenerDatosDeportes();
 
 
+    // Se obtienen los datos del equipo, se verifica si se trajo el id con GET
+    if(isset($_GET["id"])){
+        // Se crea un objeto del tipo Controlador
+        $equipo = new Controlador();
+        // Se llama al método para obtener los datos del equipo y mostrarlos en el form
+        $datosEquipo = $equipo->obtenerUnEquipo();
+    }
+
     // Si se presionó el botón de guardar
-    if(isset($_POST["guardar"])){
-        // Se llama al método para guardar los datos del nuevo equipo
+    if(isset($_POST["actualizar"])){
+        // Se llama al método para actualizar
         //echo "Llamada al método";
-        $deportes->agregarNuevoEquipo();
+        $deportes->editarEquipo();
     }
  ?>
 
 <section class="content-header">
     <h1>
-        Agregar Equipo
+        Editar Equipo
     </h1>
     
     <ol class="breadcrumb">
         <li><a href="#"><i class="fa fa-dashboard"></i> Equipos </a></li>
-        <li class="active">Agregar Equipo </li>
+        <li class="active">Editar Equipo </li>
     </ol>
 </section>
 
@@ -39,7 +47,7 @@
         <div class="box box-primary">
 
             <div class="box-header with-border">
-                <h3 class="box-title">Agregue los datos del equipo</h3>
+                <h3 class="box-title">Actualizar los datos del equipo</h3>
             </div>
 
             <!-- /.box-header -->
@@ -50,13 +58,21 @@
 
                 <div class="form-group">
                     <label for="nombre">Nombre</label>
-                    <input type="text" class="form-control" name="nombre" placeholder="Nombre del equipo" size="50" required>
+                    <input type="text" class="form-control" name="nombre" placeholder="Nombre del equipo" size="50" required value="<?php echo($datosEquipo["nombre"]) ?>">
                 </div>
 
                 <div class="form-group">
                     <label for="tutor">Deporte</label>
                     <select class="form-control" name="deporte">
-                        <?php
+                        <?php                            
+                            // Se muestra el deporte al que pertenece el equipo
+                            // Se llama al método para obtener un deporte por id
+                            $nombreDeporte = $equipo->obtenerDeportePorId($datosEquipo["deporte_id"]);
+                            echo "<option>";
+                            // Con el siguiente echo se muestra el nombre del equipo
+                            echo $nombreDeporte["nombre"];
+
+                            echo "</option>";
                            // Se muestran los diferentes datos de los equipos
                             for($i=0; $i<count($datosDeportes); $i++){
                                 echo "<option>";
@@ -71,7 +87,7 @@
                 <!-- /.box-body -->
 
                 <div class="box-footer">
-                <center> <input type="submit" class="btn btn-primary input-lg" value="Guardar Datos" name="guardar" /> </center>
+                <center> <input type="submit" class="btn btn-primary input-lg" value="Guardar Datos" name="actualizar" /> </center>
                 </div>
                 
             </form>

@@ -90,7 +90,7 @@ $datosEquipoJugador = $controlador -> traerDatosEquipoJugador();
                             /*echo '<td>'. $datosJugadores[$i]['equipo'] .'</td>';
                             echo '<td>'. $datosJugadores[$i]['deporte'] .'</td>';*/
 
-                            //Estos dos de abajo son los botones, se puede observar que estan listos para redirigir el flujo de la app a una pagina que se ellama editar y eliminar, teniendo un parametro el cual es la matricula del alumno a administrar
+                            //Estos dos de abajo son los botones, se puede observar que estan listos para redirigir el flujo de la app a una pagina que se llama editar y eliminar, teniendo un parametro el cual es la matricula del alumno a administrar
 
                             echo '<td> <a href="index.php?action=editar_jugador&id='.$datosJugadores[$i]['matricula'].'" type="button" class="btn btn-warning"> <i class="fas fa-edit"></i> </a> </td>';
                             

@@ -10,7 +10,7 @@ class Controlador
     public function cargarPlantilla()
     {
         session_start();
-        //Include se utiliza para invocar el arhivo que contiene el codigo HTML
+        //Include se utiliza para invocar el archivo que contiene el codigo HTML
         
         if( isset($_SESSION['iniciada']) ){
             include 'Views/plantilla.php';
@@ -79,6 +79,9 @@ class Controlador
         
     }
 
+
+    # USUARIOS -------------------------------------------
+        # --------------------------
     //Funcion que se encarga de registrar un nuevo usuario a la tabla de usuarios, los cuales son los administradores que pueden ingresar al sistema
     public function agregarUsuario(){
 
@@ -185,6 +188,8 @@ class Controlador
 
     }
 
+    # JUGADORES -----------------------------------
+        # --------------------------
     //Funcion que trae a todos los jugadores registrados en la dicha tabla para mostrarlos en la pagina de jugadores.php, se muestra ademas un boton para actualizar y eliminar para administrarlos
     public function obtenerDatosJugadores()
     {
@@ -262,17 +267,6 @@ class Controlador
         }
     }
 
-    //Funcion que retorna a la vista de registro los datos de las carreras disponibles para ponerlos en una lista seleccionable
-    public function obtenerDatosEquipos()
-    {
-
-        $datosDeEquipos = array();
-        
-        //Manda llamar el metodo desde el modelo y pasandole la tabla de donde se van a extraer los datos como parametro
-        $datosDeEquipos = Datos::traerDatosEquipos("equipos");
-
-        return $datosDeEquipos;
-    }
 
     //Funcion que sirve para eliminar los datos de un jugador de la tabla, para saber que jugador a eliminar se pasa como parametro GET la matricula del alumno, y posterioremte se pasa como parametro junto con el nombre de la tabla para que el modelo haga el resto
     public function eliminarJugador(){
@@ -369,8 +363,90 @@ class Controlador
 
     }
 
+    # EQUIPOS -----------------------------------------
+        # ----------------------------
+    //Funcion que retorna a la vista de registro los datos de las carreras disponibles para ponerlos en una lista seleccionable
+    public function obtenerDatosEquipos()
+    {
 
-    //funcion que permite relacion un jugaro a un respectivo equipo, es la tabla de muchos a muchos que esta entre jugadores y equipos, debido a que un equipo puede tener muchos jugadores y un jugador puede estar en mucos equipos
+        $datosDeEquipos = array();
+        
+        //Manda llamar el metodo desde el modelo y pasandole la tabla de donde se van a extraer los datos como parametro
+        $datosDeEquipos = Datos::traerDatosEquipos("equipos");
+
+        return $datosDeEquipos;
+    }
+
+
+    // Método que permite preparar los datos de un nuevo equipo y enviarlos al modelo
+    public function agregarNuevoEquipo(){
+        $nombreEquipo = $_POST["nombre"];
+        $deporte = $_POST["deporte"];
+        
+        $respuesta = Datos::agregarNuevoEquipo($nombreEquipo,$deporte);
+        
+        //Se recibe la respuesta del metodo y si esta es exitosa se manda un mensaje de notificacion al cliente y se reenvia al usuario a la lista de todos los usuarios para que vea la insercion del nuevo alumno.
+        if($respuesta == "success"){
+            echo '<script> 
+                        alert("Datos guardados correctamente");
+                        window.location.href = "index.php?action=equipos"; 
+                  </script>';            
+        }else{
+            //En caso de haber un error se queda en la misma pagina y le notifica al usuario
+            echo '<script> alert("Error al guardar") </script>';
+        }
+    }
+
+
+    // Método para enviar los datos al modelo para obtener un equipo específico
+    public function obtenerUnEquipo(){
+        // Se recibe la respuesta, se le pasa como parámetro la variable GET
+        $respuesta = Datos::obtenerUnEquipo($_GET["id"]);
+        
+        // Se retorna a la vista el array asociativo traido del modelo
+        return $respuesta;    
+    }
+
+    // Método que prepara los datos para enviarlos al modelo y actualizar un equipo
+    public function editarEquipo(){
+        $nombreEquipo = $_POST["nombre"];
+        $deporte = $_POST["deporte"];
+        
+        $respuesta = Datos::editarEquipo($nombreEquipo,$deporte,$_GET["id"]);
+        
+        //Se recibe la respuesta del metodo y si esta es exitosa se manda un mensaje de notificacion al cliente y se reenvia al usuario a la lista de todos los usuarios para que vea la insercion del nuevo alumno.
+        if($respuesta == "success"){
+            echo '<script> 
+                        alert("Datos actualizados correctamente");
+                        window.location.href = "index.php?action=equipos"; 
+                  </script>';            
+        }else{
+            //En caso de haber un error se queda en la misma pagina y le notifica al usuario
+            echo '<script> alert("Error al guardar") </script>';
+        }
+    }
+
+    // Método para eliminar un equipo
+    public function eliminarEquipo(){
+        // Se recibe la respuesta del modelo
+        // Se pasa como parámetro el id del equipo a eliminar
+        $respuesta = Datos::eliminarEquipo($_GET["id"]);
+
+        // Si se eliminó el equipó con éxito se muestra el mensaje correspondiente
+        if($respuesta == "success"){
+            echo '<script> 
+                        alert("Equipo eliminado");
+                        window.location.href = "index.php?action=equipos"; 
+                  </script>';            
+        }else{
+            //En caso de haber un error se queda en la misma pagina y le notifica al usuario
+            echo '<script> alert("Error al eliminar") </script>';
+        }
+    }
+
+
+
+    //funcion que permite relacion un jugador a un respectivo equipo, es la tabla de muchos a muchos que esta entre jugadores y equipos, debido a que un equipo puede tener muchos jugadores y un jugador puede estar en muchos equipos
     public function guardar_jugador_equipo(){
 
         //Datos que vienen desde el formulario en de la vista agregar_jugador_a_equipo en donde se coloca un jugador a un equipo
@@ -390,7 +466,27 @@ class Controlador
         }else{
             echo '<script> alert("Error al guardar") </script>';
         }
+    }
 
+
+    # DEPORTES ---------------------------------------------
+        # --------------------------------
+    // Método para obtener el deporte por el id
+    public function obtenerDeportePorId($deporte_id){
+
+        $respuesta = Datos::obtenerDeportePorId($deporte_id);
+
+        if($respuesta) return $respuesta;
+        else return false;
+    }
+
+    // Método para obtener los datos de los deportes
+    public function obtenerDatosDeportes(){
+
+        $respuesta = Datos::obtenerDatosDeportes();
+
+        if($respuesta) return $respuesta;
+        else return false;
     }
 
 }

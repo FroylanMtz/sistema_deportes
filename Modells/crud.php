@@ -158,8 +158,9 @@ class Datos extends Conexion{
     //Funcion que envia al controlador todos los datos de la tabla equipos, la cual contiene las equipos de la universdiad
     public function traerDatosEquipos($tabla){
 
-        //Conexion::conectar() -> es igual a un objeto PDO el cual sirve para conectarse a la base de datos
-        $stmt = Conexion::conectar()->prepare("SELECT * FROM $tabla");
+        //Conexion::conectar() -> es igual a un objeto PDO el cual sirve para conectarse a la base de datos.
+        // Se ordenan los equipos por deporte
+        $stmt = Conexion::conectar()->prepare("SELECT * FROM $tabla ORDER BY deporte_id");
 
         //Metodo que ejecuta el query previamente preparado
         $stmt->execute();
@@ -199,7 +200,6 @@ class Datos extends Conexion{
         }else{
             return "error";
         }
-
     }
 
     
@@ -320,10 +320,131 @@ class Datos extends Conexion{
             }else{
                 return "error";
             }
-
         }
-
     }
+
+
+    # DEPORTES -----------------------------------------
+        # -------------------------------
+    // Método para obtener el nombre del deporte por el id
+    // Recibe como parámetro el id del deporte
+    public function obtenerDeportePorId($deporte_id){
+        // Consulta sql, selecciona el nombre dependiendo del id
+        $sql = "SELECT nombre FROM deportes WHERE deporte_id=?";
+        // Se prepara la consulta con el método prepare
+        $stmt = Conexion::conectar()->prepare($sql);
+        // Se ejecuta la consulta, pasándole el parámetro del deporte_id
+        $stmt->execute([$deporte_id]);
+
+        // Se obtiene el resultado en forma de array
+        $respuesta = $stmt->fetch();
+
+        // Se retorna el array
+        return $respuesta;
+    }
+
+    // Método para obtener los datos de los deportes
+    public function obtenerDatosDeportes(){
+        // Consulta sql
+        $sql = "SELECT * FROM deportes";
+        // Se prepara la consulta
+        $stmt = Conexion::conectar()->prepare($sql);
+        // Se ejecuta la consulta
+        $stmt->execute();
+
+        // Se obtiene el resultado en forma de array
+        $respuesta = $stmt->fetchAll();
+        // Se retorna el array
+        return $respuesta;
+    }
+
+
+
+    # EQUIPOS -----------------------------------------
+        # -----------------------------
+      //Funcion que almacena todos los datos de un equipo en su respectiva tabla, también pasada por parametro (el nombre)
+    public function agregarNuevoEquipo($nombreEquipo, $nombreDeporte){
+
+        # ID del deporte --------------------------------
+        // Se obtiene el id del deporte
+        $sql_deporte_id = "SELECT deporte_id FROM deportes WHERE nombre=?";
+        $stmt_deporte_id = Conexion::conectar()->prepare($sql_deporte_id);
+        $stmt_deporte_id->execute([$nombreDeporte]);
+        $deporte_id = $stmt_deporte_id->fetch();
+
+
+        //Se prepara el query con el comando INSERT -> DE INSERTAR 
+        $stmt = Conexion::conectar()->prepare("INSERT INTO equipos(nombre,deporte_id) VALUES( :nombre, :deporte)");
+        
+        //Se colocan todos sus parametros especificados, y se relacionan con los datos pasdaos por parametro a esta funcion desde el controladro en modo de array asociativo
+        //Asi como se especifica como deben ser tratados (tipo de dato)
+        
+        $stmt->bindParam(":nombre", $nombreEquipo, PDO::PARAM_STR);
+        $stmt->bindParam(":deporte", $deporte_id["deporte_id"], PDO::PARAM_STR);
+        
+
+        //Se ejecuta dicha insercion y se notifica al controlador para que este le notifique a las vistas necesarias
+        if($stmt->execute()){
+            
+            return "success";
+        }else{
+            return "error";
+        }
+    }
+
+    // Método para editar un equipo, se pasan como parámetros el nombre del equipo,
+    // nombre del deporte y el id del equipo
+    public function editarEquipo($nombreEquipo, $nombreDeporte, $equipo_id){
+
+        # ID del deporte --------------------------------
+        // Se obtiene el id del deporte
+        $sql_deporte_id = "SELECT deporte_id FROM deportes WHERE nombre=?";
+        $stmt_deporte_id = Conexion::conectar()->prepare($sql_deporte_id);
+        $stmt_deporte_id->execute([$nombreDeporte]);
+        $deporte_id = $stmt_deporte_id->fetch();
+
+
+        //Se prepara el query con el comando INSERT -> DE INSERTAR 
+        $stmt = Conexion::conectar()->prepare("UPDATE equipos SET nombre=?, deporte_id=? WHERE equipo_id=?");
+                
+        //Se ejecuta dicha insercion y se notifica al controlador para que este le notifique a las vistas necesarias
+        if($stmt->execute([$nombreEquipo,$deporte_id["deporte_id"],$equipo_id])) {
+            return "success";
+        }else{
+            return "error";
+        }
+    }
+
+
+    // Método para eliminar un equipo, se pasa de parámetro el id del equipo
+    public function eliminarEquipo($equipo_id){
+        // Consulta sql
+        $sql = "DELETE FROM equipos WHERE equipo_id=?";
+        // Se prepara la consulta
+        $stmt = Conexion::conectar()->prepare($sql);
+        // Se ejecuta y se verifica si se eliminó el equipo de forma exitosa
+        if($stmt->execute([$equipo_id])){ return "success"; }
+        else{ return false; }
+    }
+
+
+    // Método para obtener los datos de un equipo (para poder actualizarlo)
+    // Recibe como parámetro el id traido con GET
+    public function obtenerUnEquipo($equipo_id){
+        // Consulta sql
+        $sql = "SELECT * FROM equipos WHERE equipo_id=?";
+        // Se prepara la consulta
+        $stmt = Conexion::conectar()->prepare($sql);
+        // Se ejecuta la consulta pasándole como parámetro el id del equipo
+        $stmt->execute([$equipo_id]);
+
+        // Se obtiene el resultado de la consulta como un array asociativo
+        $respuesta = $stmt->fetch();
+
+        // Se retorna el array
+        return $respuesta;
+    }
+
 
 }
 
