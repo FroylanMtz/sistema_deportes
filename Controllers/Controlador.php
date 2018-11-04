@@ -471,7 +471,7 @@ class Controlador
     }
 
 
-    // Método para enviar a la vista los datos de los jugadores de un equipo
+    // Método para enviar a la vista los datos de los jugadores de un equipo.
     public function obtenerJugadoresEquipo() {
         // Se recibe la respuesta del modelo
         $respuesta = Datos::obtenerJugadoresEquipo($_GET["id"]);
