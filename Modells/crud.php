@@ -136,6 +136,10 @@ class Datos extends Conexion{
 
     }
 
+
+
+    # JUGADORES - EQUIPO ---------------------------------------
+        # ----------------------------------
     //Funcion que trae todos los registros de la tabla usuarios para mostrarlos,
     //Como todas las tablas pertenecientes a esta base de datos estan relacionados, se ocupo de una union de las mismas, para de esta forma mandar todo como si fuera una unica tabla con la informacion necesaria por la tabla principal que es de alumnos, por ejemplo digamos que se relacion la tabla alumnos con la re tutores, pero solo es por un id, para poder ver el nombre del tutor es necesario esta union
     public function traerDatosEquipoJugador(){
@@ -152,8 +156,24 @@ class Datos extends Conexion{
         
         //Se retornan al controlador para luego ser aventadas a la vista xD
         return $r;
-
     }
+
+    
+    // Método que trae los datos de todos los jugadores de un equipo
+    public function obtenerJugadoresEquipo($equipo_id){
+        // Consulta sql
+        $sql = "SELECT * FROM jugadores INNER JOIN equipo_jugadores on equipo_jugadores.equipo_id=?";
+        // Se prepara la consulta
+        $stmt = Conexion::conectar()->prepare($sql);
+        // Se ejcuta la consulta
+        $stmt->execute([$equipo_id]);
+
+        // Se guarda el resultado en forma de array asociativo
+        $respuesta = $stmt->fetchAll();
+        // Se retorna el array
+        return $respuesta;
+    }
+
 
     //Funcion que envia al controlador todos los datos de la tabla equipos, la cual contiene las equipos de la universdiad
     public function traerDatosEquipos($tabla){

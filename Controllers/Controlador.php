@@ -445,6 +445,8 @@ class Controlador
     }
 
 
+    # JUGADORES - EQUIPO -----------------------------------
+        # ----------------------------
 
     //funcion que permite relacion un jugador a un respectivo equipo, es la tabla de muchos a muchos que esta entre jugadores y equipos, debido a que un equipo puede tener muchos jugadores y un jugador puede estar en muchos equipos
     public function guardar_jugador_equipo(){
@@ -467,6 +469,18 @@ class Controlador
             echo '<script> alert("Error al guardar") </script>';
         }
     }
+
+
+    // Método para enviar a la vista los datos de los jugadores de un equipo
+    public function obtenerJugadoresEquipo() {
+        // Se recibe la respuesta del modelo
+        $respuesta = Datos::obtenerJugadoresEquipo($_GET["id"]);
+
+        // Se traen todos los datos en forma de array asociativo
+        if($respuesta) return $respuesta;
+        else return false;
+    }
+
 
 
     # DEPORTES ---------------------------------------------
