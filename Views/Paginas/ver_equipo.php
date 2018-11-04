@@ -5,13 +5,16 @@
 
     // Se guarda en un array los datos traidos del método para obtener los
     // juhadores de ese equipo
-    $datosEquipo = $equipos->obtenerJugadoresEquipo();
+    $jugadoresEquipo = $equipo->obtenerJugadoresEquipo();
+
+    //Obtener los datos del equipo (para colocar el nombre)
+    $datosEquipo = $equipo->obtenerUnEquipo();
    
  ?>
 
 <section class="content-header">
     <h1>
-        Lista de jugadores <?php // Poner nombre del equipo ?>
+        Lista de jugadores: <strong> <?php echo $datosEquipo["nombre"]; ?> </strong>
     </h1>
     
     <ol class="breadcrumb">
@@ -49,18 +52,20 @@
             <tbody>
                 <?php
                     // Ciclo en cual se muestran todos los equipos del sistema
-                    for($i=0; $i<count($datosEquipo); $i++){
+                    for($i=0; $i<count($jugadoresEquipo); $i++){
                         echo "<tr>";                        
-                        echo "<td>" . $datosEquipo[$i]["nombre"] . "</td>";
-                        //echo "<td>" . $datosEquipo[$i]["deporte_id"] . "</td>";
+                        echo "<td>" . $jugadoresEquipo[$i]["matricula"] . "</td>";
+                        echo "<td>" . $jugadoresEquipo[$i]["nombre"] . "</td>";
+                        echo "<td>" . $jugadoresEquipo[$i]["equipo_id"] . "</td>";
+                        //echo "<td>" . $jugadoresEquipo[$i]["deporte_id"] . "</td>";
                         // Se llama al método para obtener el nombre del deporte por id
-                        $deporte = $equipos->obtenerDeportePorId($datosEquipo[$i]["deporte_id"]);
+                        //$deporte = $equipo->obtenerDeportePorId($jugadoresEquipo[$i]["deporte_id"]);
                         // Se muestra el nombre del deporte        
-                        echo "<td>" . $deporte["nombre"] . "</td>";
+                        //echo "<td>" . $deporte["nombre"] . "</td>";
 
                          // Botón para ver los datos con más detalle del jugador
 
-                        echo '<td> <a href="index.php?action=ver_jugador&id='.$datosEquipo[$i]['equipo_id'].'" type="button" class="btn btn-primary"> <i class="fas fa-search"></i> </a> </td>';                       
+                        echo '<td> <a href="index.php?action=ver_jugador&id='.$jugadoresEquipo[$i]['equipo_id'].'" type="button" class="btn btn-primary"> <i class="fas fa-search"></i> </a> </td>';                       
                     }
                 ?>
             </tbody>

@@ -160,9 +160,10 @@ class Datos extends Conexion{
 
     
     // Método que trae los datos de todos los jugadores de un equipo
-    public function obtenerJugadoresEquipo($equipo_id){
+    public function obtenerJugadoresEquipo($equipo_id) {
         // Consulta sql
-        $sql = "SELECT * FROM jugadores INNER JOIN equipo_jugadores on equipo_jugadores.equipo_id=?";
+        // Se seleccionan los jugadores que pertenezcana a determinado equipo
+        $sql = "SELECT * FROM jugadores INNER JOIN equipo_jugadores on equipo_jugadores.equipo_id=? AND jugadores.matricula=equipo_jugadores.jugador_id";
         // Se prepara la consulta
         $stmt = Conexion::conectar()->prepare($sql);
         // Se ejcuta la consulta
@@ -170,6 +171,9 @@ class Datos extends Conexion{
 
         // Se guarda el resultado en forma de array asociativo
         $respuesta = $stmt->fetchAll();
+
+        //var_dump($respuesta);
+        //exit();
         // Se retorna el array
         return $respuesta;
     }
