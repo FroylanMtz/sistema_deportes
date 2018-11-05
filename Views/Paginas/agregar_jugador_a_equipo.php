@@ -22,6 +22,17 @@ if(isset( $_POST['jugador'] ) && isset( $_POST['equipo']) ){
 }
 
 
+// Si viene de la vista de ver_jugador y oprimio "Agregar jugador a equipo"
+// Todo esto para que en el select aparezca primero el jugador a agregar a algun equipo
+if(isset($_GET["id"])){
+    // Se llama al método para traer los datos del jugador
+    $jugador = $controlador->obtenerDatosJugador();
+    // Variable booleana para saber si poner en el select el nombre del jugador
+    $jugador_id = true; 
+}else{
+    $jugador_id = false;
+}
+
 ?>
 
 <section class="content-header">
@@ -61,6 +72,11 @@ if(isset( $_POST['jugador'] ) && isset( $_POST['equipo']) ){
                     <label for="jugador">Jugador</label>
                     <select class="form-control" name="jugador">
                         <?php
+                            // Si Se tiene la matricula del jugador a agregar
+                            // se coloca su nombre primero, para no buscarlo entre la lista
+                            if($jugador_id){
+                                echo '<option value="'.$jugador[0]['matricula'].'"> '. $jugador[0]['nombre'].' '. $jugador[0]['apellido'] .' </option>';
+                            }
                             for($i = 0; $i < count($datosJugadores); $i++ ){
                                 echo '<option value="'.$datosJugadores[$i]['matricula'].'"> '. $datosJugadores[$i]['nombre'].' '. $datosJugadores[$i]['apellido'] .' </option>';
                             }

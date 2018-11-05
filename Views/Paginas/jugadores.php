@@ -52,6 +52,8 @@ $datosEquipoJugador = $controlador -> traerDatosEquipoJugador();
                     <th>Apellido (s)</th>
                     <th>Correo</th>
                     <th>Equipo (s)</th>
+
+                    <th>Detalles</th>
                     <th>Modificar</th>
                     <th>Eliminar</th>
                 </tr>
@@ -67,6 +69,7 @@ $datosEquipoJugador = $controlador -> traerDatosEquipoJugador();
                             echo '<td>'. $datosJugadores[$i]['apellido'] .'</td>';
                             echo '<td>'. $datosJugadores[$i]['correo'] .'</td>';
 
+                            // Estas dos variables y el ciclo son para mostrar los equipos a los que pertenece cierto jugador
                             $equipos = 0;
                             $todosLosEquipos = "";
 
@@ -78,7 +81,6 @@ $datosEquipoJugador = $controlador -> traerDatosEquipoJugador();
 
                                     $equipos++;
                                 }
-
                             }
 
                             if($equipos == 0){
@@ -91,6 +93,7 @@ $datosEquipoJugador = $controlador -> traerDatosEquipoJugador();
                             echo '<td>'. $datosJugadores[$i]['deporte'] .'</td>';*/
 
                             //Estos dos de abajo son los botones, se puede observar que estan listos para redirigir el flujo de la app a una pagina que se llama editar y eliminar, teniendo un parametro el cual es la matricula del alumno a administrar
+                            echo '<td> <a href="index.php?action=ver_jugador&id='.$datosJugadores[$i]['matricula'].'" type="button" class="btn btn-primary"> <i class="fas fa-search"></i> </a> </td>';
 
                             echo '<td> <a href="index.php?action=editar_jugador&id='.$datosJugadores[$i]['matricula'].'" type="button" class="btn btn-warning"> <i class="fas fa-edit"></i> </a> </td>';
                             

@@ -296,6 +296,9 @@ class Datos extends Conexion{
     }
     
 
+    # JUGADORES - EQUIPOS -------------------------------------
+        # ---------------------------
+
     //Funcion que se usa para hacer la relacion del jugador a un determinado equipo, es una tabla mucho a muchos entre equipos y jugadores
     function guardar_jugador_equipo($equipo,$jugador,$tabla){
 
@@ -347,6 +350,39 @@ class Datos extends Conexion{
         }
     }
 
+
+    // Método para obtener los equipos a los que pertenece un jugador
+    // Se pasa como parámetro la matrícula del jugador
+    public function equiposDeJugador($matricula) {
+        // Consulta sql, inner join de las tablas equipo_jugador y equipos para traer los
+        // datos de los equipos a los que pertenece cierto jugador
+        $sql = "SELECT * FROM equipos INNER JOIN equipo_jugadores ON equipo_jugadores.jugador_id=? AND equipos.equipo_id = equipo_jugadores.equipo_id";
+        // Se prepara la consulta
+        $stmt = Conexion::conectar()->prepare($sql);
+        // Se ejcuta la consulta pasandole la matricula del jugador como parámetro
+        $stmt->execute([$matricula]);
+
+        // Se guarda el resultado en forma de array asociativo
+        $respuesta = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        // Se retorna la respuesta
+        return $respuesta;
+    }
+
+
+    // Método para dar de baja un jugador de un equipo
+    // Recibe como parámetros el id del equipo y la matricula del jugador
+    public function bajaJugadorEquipo($equipo_id, $jugador_id) {
+        // Consulta sql, se elimina el registro en donde coincidan los dos valores
+        // de los parámetros de la tabla equipo_jugadores
+        $sql = "DELETE FROM equipo_jugadores WHERE equipo_id=? AND jugador_id=?";
+        // Se prepara la consulta
+        $stmt = Conexion::conectar()->prepare($sql);
+
+        // Si se ejecuta con éxito devuelve success de lo contrario false
+        // Se pasan los parámetros de la función en execute([])
+        if($stmt->execute([$equipo_id,$jugador_id])){ return "success"; }
+        else return false;
+    }
 
     # DEPORTES -----------------------------------------
         # -------------------------------

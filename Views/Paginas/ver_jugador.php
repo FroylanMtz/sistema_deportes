@@ -9,6 +9,17 @@ $datosJugador = array();
 //Y se llena ese array con la respuesta con los datos
 $datosJugador = $controlador->obtenerDatosJugador();
 
+// Se llama al método del controlador para obtener los equipos a los que pertenece un jugador
+$equiposJugador = $controlador->equiposDeJugador();
+
+
+# DAR DE BAJA UN JUGADOR DE UN EQUIPO ----------
+// Si se oprimió el botón de baja se llama al método del controlador correspondiente
+if(isset($_GET["accion"])){
+    if($_GET["accion"] == "baja"){
+        $baja = $controlador->bajaJugadorEquipo();
+    }
+}
 ?>
 
 <section class="content-header">
@@ -43,10 +54,10 @@ $datosJugador = $controlador->obtenerDatosJugador();
                                
 
                 <div class="form-group">                    
-                    <img src="fotos_jugadores/<?= $datosJugador[0]['foto'] ?>" width="100px" height="100px" />
+                    <img src="fotos_jugadores/<?= $datosJugador[0]['foto'] ?>" width="150px" height="150px" />
                 </div>
 
-
+                
                 <div class="form-group">
                     <label for="nombre">Nombre: <?php echo $datosJugador[0]['nombre']; ?></label>                    
                 </div>
@@ -60,8 +71,50 @@ $datosJugador = $controlador->obtenerDatosJugador();
                     <label for="correo">Correo: <?php echo $datosJugador[0]['correo']?> </label>                    
                 </div>
 
-               
+               <?php 
+                    // Se mustren los equipos a los que pertence un jugador
+                    if($equiposJugador != null){
+                                         
+                ?>
+                        <!-- BOTÓN PARA ENROLAR EL JUGADOR A UN EQUIPO EQUIPO -->
+                           <a href="index.php?action=agregar_jugador_a_equipo&id=<?php echo($datosJugador[0]["matricula"]) ?>" type="button" class="btn btn-success"> <i class="fas fa-edit"></i> Agregar a un equipo </a>
+                           <br><br>
+                <?php        
+                        echo "<strong>Equipos </strong><br><br>";       
+                        // Se muestra una tabla con los nombres de los equipos con la 
+                        // opción de darlo de baja del equipo
+                ?>     
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                                <th> Equipo </th>
+                                <th> Dar de baja </th>
+                            </thead>
+                            <tbody>
+                             <?php                              
+                               foreach($equiposJugador as $equipos):
+                            echo "<tr>";
+                               echo "<td><strong>" . $equipos["nombre"] . "</strong></td>";
+                             ?> 
+                                                                                                
+                            <!-- BOTÓN PARA DESENROLAR EL JUGADOR DEL EQUIPO -->
+                            <td><a href="index.php?equipo=<?php echo($equipos["equipo_id"]) ?>&id=<?php echo($datosJugador[0]["matricula"]) ?>&action=ver_jugador&accion=baja" type="button" class="btn btn-danger"> <i class="fas fa-edit"></i> Baja </a> </td>
+                          <?php 
+                                echo "</tr>";
+                                endforeach; // Fin foreach
+                            } // FIN IF
+                            else{
+                              echo "Actualmente no se encuentra registrado en ningún equipo ";
+                           ?>
 
+                            <!-- BOTÓN PARA ENROLAR EL JUGADOR A UN EQUIPO EQUIPO -->
+                           <a href="index.php?action=agregar_jugador_a_equipo&id=<?php echo($datosJugador[0]["matricula"]) ?>" type="button" class="btn btn-success"> <i class="fas fa-edit"></i> Agregar a un equipo </a>
+                           <?php                                  
+                            }
+                          ?>                                                       
+                        <!-- SE CIERRA LA TABLA -->
+                         </tbody>
+                        </table>
+                        
                 </div>
                 <!-- /.box-body -->
 

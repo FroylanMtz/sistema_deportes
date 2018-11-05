@@ -6,6 +6,8 @@ class Controlador
     private $enlace = '';
     private $pagina = '';
 
+    # PLANTILLA ------------------------------------------
+        # ------------------------------
     //Llamar a la plantilla
     public function cargarPlantilla()
     {
@@ -20,6 +22,9 @@ class Controlador
         
     }
 
+
+    # Páginas --------------------------------------------
+        # ----------------------------
     //Interacción con el usuario
     public function mostrarPagina()
     {
@@ -41,6 +46,9 @@ class Controlador
         include $pagina;
     }
 
+
+    # Iniciar Sesión -----------------------------------
+        # ----------------------
     //Funcion para acceder al sistema, en la pagina de login es donde se llama a esta funcion, en esa pagina esta un formulario en el cual se envian los datos que son comparados en la base de datos para saber si el usuario que intenta ingresar si está en la base de datos y dejarlo entrar
     public function iniciarSesion()
     {
@@ -482,6 +490,33 @@ class Controlador
     }
 
 
+    // Método que obtiene la respuesta del modelo sobre los equipos a los
+    // que pertenece cierto jugador
+    public function equiposDeJugador(){
+        // Se obtiene la respuesta del modelo, se pasa el id del jugador (matricula)
+        $respuesta = Datos::equiposDeJugador($_GET["id"]);
+
+        // Se traen todos los datos en forma de array asociativo
+        if($respuesta) return $respuesta;
+        else return null; // Si es un array vacio retorna null
+    }
+
+    // Método para recibir la respuesta del mdelo y enviarla a la vista de cuando
+    // un jugador es baja de un equipo
+    public function bajaJugadorEquipo() {
+        // Se pasa el id del equipo y la matricula del jugador con GET
+        $respuesta = Datos::bajaJugadorEquipo($_GET["equipo"], $_GET["id"]);
+
+        // Si la eliminación se realizó con éxito se manda el mensaje correspondiente
+        if($respuesta == "success"){
+            echo '<script> 
+                    alert("Jugador dado de baja del equipo");
+                    window.location.href = "index.php?action=jugadores";
+                  </script>';
+        }else{
+            echo '<script> alert("Error al dar de baja") </script>';
+        }
+    }
 
     # DEPORTES ---------------------------------------------
         # --------------------------------
