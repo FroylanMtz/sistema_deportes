@@ -53,13 +53,7 @@
                         echo "<tr>";
                         echo "<td>" . $jugadoresE["matricula"] . "</td>";
                         echo "<td>" . $jugadoresE["nombre"] . "</td>";
-                        echo "<td>" . $jugadoresE["correo"] . "</td>";
-                        //echo "<td>" . $jugadoresE["deporte_id"] . "</td>";
-                        // Se llama al método para obtener el nombre del deporte por id
-                        //$deporte = $equipo->obtenerDeportePorId($jugadoresE["deporte_id"]);
-                        // Se muestra el nombre del deporte        
-                        //echo "<td>" . $deporte["nombre"] . "</td>";
-
+                        echo "<td>" . $jugadoresE["correo"] . "</td>";                        
                          // Botón para ver los datos con más detalle del jugador
 
                         echo '<td> <a href="index.php?action=ver_jugador&id='.$jugadoresE['matricula'].'" type="button" class="btn btn-primary"> <i class="fas fa-search"></i> </a> </td>';                       
