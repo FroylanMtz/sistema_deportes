@@ -21,6 +21,7 @@ class Modelo
             $enlace == "agregar_equipo" ||
             $enlace == "editar_equipo" ||
             $enlace == "ver_equipo" ||
+            $enlace == "ver_jugador" ||
             $enlace == "agregar_jugador_a_equipo" )
         {
             //Mostramos el URL concatenado con la variable $enlacesModel

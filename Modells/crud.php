@@ -194,7 +194,7 @@ class Datos extends Conexion{
         //se traen todos los datos con la funcion fetchAll
         $r = $stmt->FetchAll();
         
-        //Se retornan los datos para el modelo
+        //Se retornan los datos para el modelos        
         return $r;
     
     }

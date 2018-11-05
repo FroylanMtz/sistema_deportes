@@ -32,12 +32,6 @@
 
 <div class="box">
 
-    <div class="box-header">
-        <!--<h3 class="box-title">Data Table With Full Features</h3> -->
-        <a href="index.php?action=agregar_equipo" class="btn btn-primary " > <i class="fas fa-plus-square"></i> Agregar nuevo equipo </a>
-        <hr>
-    </div>
-
     <!-- /.box-header -->
     <div class="box-body">
         <table id="tabla" class="table table-bordered table-striped">
@@ -46,7 +40,8 @@
                     <!--Columnas de la cabecera de la tabla-->
                     <th>Matricula</th>
                     <th>Nombre</th>
-                    <th>Correo</th>                    
+                    <th>Correo</th>
+                    <th>Detalles</th>                
                 </tr>
             </thead>
             <tbody>
@@ -56,7 +51,7 @@
                         echo "<tr>";                        
                         echo "<td>" . $jugadoresEquipo[$i]["matricula"] . "</td>";
                         echo "<td>" . $jugadoresEquipo[$i]["nombre"] . "</td>";
-                        echo "<td>" . $jugadoresEquipo[$i]["equipo_id"] . "</td>";
+                        echo "<td>" . $jugadoresEquipo[$i]["correo"] . "</td>";
                         //echo "<td>" . $jugadoresEquipo[$i]["deporte_id"] . "</td>";
                         // Se llama al método para obtener el nombre del deporte por id
                         //$deporte = $equipo->obtenerDeportePorId($jugadoresEquipo[$i]["deporte_id"]);
@@ -65,7 +60,7 @@
 
                          // Botón para ver los datos con más detalle del jugador
 
-                        echo '<td> <a href="index.php?action=ver_jugador&id='.$jugadoresEquipo[$i]['equipo_id'].'" type="button" class="btn btn-primary"> <i class="fas fa-search"></i> </a> </td>';                       
+                        echo '<td> <a href="index.php?action=ver_jugador&id='.$jugadoresEquipo[$i]['matricula'].'" type="button" class="btn btn-primary"> <i class="fas fa-search"></i> </a> </td>';                       
                     }
                 ?>
             </tbody>

@@ -231,7 +231,7 @@ class Controlador
         //Se concatena al nombre la carpeta en donde se guardaran todas las fotos cargadas por los usuarios
         $directorio = 'fotos_jugadores/' . $nombreArchivo;
 
-        //Para hacer algunas validaciones y el usuario por ejemplo no pase como foto una archivo pdf se extrae la extencion de la foto
+        //Para hacer algunas validaciones y el usuario por ejemplo no pase como foto una archivo pdf se extrae la extension de la foto
         $extension = pathinfo($directorio , PATHINFO_EXTENSION);
 
         //Todos los datos obtenidos del formulario son guardados en un objeto para luego ser pasados al modelo en donde serna almacenados en su respectiva tabla
@@ -243,7 +243,7 @@ class Controlador
 
 
         //Aqui es donde se hace la validacion de el archivo sea una foto con extensiones de imagenes frecuentes y no un formato .docs o un pdf por ejemplo
-        if($extension != 'png' && $extension != 'jpg' && $extension != 'PNG' && $extension != 'JPG'){
+        if($extension != 'png' && $extension != 'jpg' && $extension != 'PNG' && $extension != 'JPG' && $extension != 'jpeg' && $extension != 'JPEG'){
             echo '<script> alert("Error al subir el archivo intenta con otro") </sript>';
         }else{
 
@@ -323,7 +323,7 @@ class Controlador
             $foto = $_POST['fotoActual'];
         }else{
             
-            if($extension != 'png' && $extension != 'jpg' && $extension != 'PNG' && $extension != 'JPG'){
+            if($extension != 'png' && $extension != 'jpg' && $extension != 'PNG' && $extension != 'JPG' && $extension != 'jpeg' && $extension != 'JPEG'){
                 echo '<script> alert("Error al subir el archivo intenta con otro") </sript>';
                 
                 $foto = $_POST['fotoActual'];
